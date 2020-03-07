@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
 import Routes from "./Routes";
 import { Link } from "react-router-dom";
@@ -6,6 +6,13 @@ import { Nav, Navbar, NavItem } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 
 function App(props) {
+
+    const [isAuthenticated, userHasAuthenticated] = useState(false)
+
+    function handleLogout() {
+        userHasAuthenticated(false);
+    }
+
     return (
         <div className="App container">
             <Navbar fluid collapseOnSelect>
@@ -17,16 +24,21 @@ function App(props) {
                 </Navbar.Header>
                 <Navbar.Collapse>
                     <Nav pullRight>
-                        <LinkContainer to="/sign up">
-                            <NavItem>Signup</NavItem>
-                        </LinkContainer>
-                        <LinkContainer to="/login">
-                            <NavItem>Login</NavItem>
-                        </LinkContainer>
+                        {isAuthenticated
+                            ? <NavItem onClick={handleLogout}>Logout</NavItem>
+                            : <>
+                                <LinkContainer to="/sign up">
+                                    <NavItem>Sign up</NavItem>
+                                </LinkContainer>
+                                <LinkContainer to="/login">
+                                    <NavItem>Login</NavItem>
+                                </LinkContainer>
+                            </>
+                        }
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
-            <Routes />
+            <Routes appProps={{ isAuthenticated, userHasAuthenticated }} />
         </div>
     );
 }
