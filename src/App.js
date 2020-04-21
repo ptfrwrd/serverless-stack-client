@@ -1,19 +1,46 @@
-import React, { useState } from "react";
 import "./App.css";
 import Routes from "./Routes";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { Nav, Navbar, NavItem } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
+import { Auth } from "aws-amplify";
+import React, { useState, useEffect } from "react";
+import { onError } from "./libs/errorLib";
+
 
 function App(props) {
+    const [isAuthenticating, setIsAuthenticating] = useState(true);
+    const [isAuthenticated, userHasAuthenticated] = useState(false);
+    const history = useHistory();
 
-    const [isAuthenticated, userHasAuthenticated] = useState(false)
+    useEffect(() => {
+        onLoad();
+    }, []);
 
-    function handleLogout() {
-        userHasAuthenticated(false);
+    async function onLoad() {
+        try {
+            await Auth.currentSession();
+            userHasAuthenticated(true);
+        }
+        catch(e) {
+            if (e !== 'No current user') {
+                onError(e)
+            }
+        }
+
+        setIsAuthenticating(false);
     }
 
+    async function handleLogout() {
+        await Auth.signOut();
+        userHasAuthenticated(false);
+        history.push("/login");
+    }
+
+
+
     return (
+        !isAuthenticating &&
         <div className="App container">
             <Navbar fluid collapseOnSelect>
                 <Navbar.Header>
@@ -27,8 +54,8 @@ function App(props) {
                         {isAuthenticated
                             ? <NavItem onClick={handleLogout}>Logout</NavItem>
                             : <>
-                                <LinkContainer to="/sign up">
-                                    <NavItem>Sign up</NavItem>
+                                <LinkContainer to="/signup">
+                                    <NavItem>Signup</NavItem>
                                 </LinkContainer>
                                 <LinkContainer to="/login">
                                     <NavItem>Login</NavItem>
