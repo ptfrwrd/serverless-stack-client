@@ -6,6 +6,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import { Auth } from "aws-amplify";
 import React, { useState, useEffect } from "react";
 import { onError } from "./libs/errorLib";
+import { AppContext } from "./libs/contextLib";
 
 
 function App(props) {
@@ -65,7 +66,9 @@ function App(props) {
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
-            <Routes appProps={{ isAuthenticated, userHasAuthenticated }} />
+            <AppContext.Provider value={{ isAuthenticated, userHasAuthenticated }}>
+                <Routes />
+            </AppContext.Provider>
         </div>
     );
 }

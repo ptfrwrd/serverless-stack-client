@@ -4,6 +4,7 @@ import Home from "./containers/Home";
 import NotFound from "./containers/NotFound";
 import Login from "./containers/Login";
 import AppliedRoute from "./components/AppliedRoute";
+import Signup from "./containers/Signup";
 
 
 export default function Routes({ appProps }) {
@@ -12,7 +13,9 @@ export default function Routes({ appProps }) {
             <AppliedRoute path="/" exact component={Home} appProps={appProps} />
             <AppliedRoute path="/login" exact component={Login} appProps={appProps} />
             { /* Finally, catch all unmatched routes */ }
-            <Route component={NotFound} />
+            <Route exact path="/signup">
+                <Signup />
+            </Route>
         </Switch>
     );
 }
